@@ -1,17 +1,10 @@
 <?php
 namespace App\Responder\Example;
 
-class ExampleIndexResponder
+use App\Responder\BaseResponder;
+
+class ExampleIndexResponder extends BaseResponder
 {
-    public function send($data)
-    {
-        extract($data);
-
-        ob_start();
-        include( VIEW_DIR . '/welcome.php');
-        $content = ob_get_contents();
-        ob_end_clean();
-
-        return $content;
-    }
+    protected $template = 'welcome';
+    protected $type = 'html';
 }
