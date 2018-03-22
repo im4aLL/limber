@@ -2,21 +2,26 @@
 namespace App\Responder;
 
 use Limber\Header;
+use Limber\Minify;
 
 abstract class BaseResponder
 {
     protected $template = null;
     protected $type = 'html';
+    protected $additionalHeaders = [];
 
     private $data = [];
     private $header;
+    private $outputType = '';
 
     /**
      * BaseResponder constructor.
      */
     public function __construct()
     {
-        $this->header = new Header();
+        $this->header = new Header($this->additionalHeaders);
+
+        $this->outputType = config()->outputType;
     }
 
     /**
@@ -35,6 +40,8 @@ abstract class BaseResponder
         elseif($this->type == 'json') {
             return $this->renderJson();
         }
+
+        return $this->render();
     }
 
     /**
@@ -54,9 +61,35 @@ abstract class BaseResponder
             $this->template = 'default';
         }
 
-        ob_start();
-        include VIEW_DIR . '/'.$this->getTemplate().'.php';
-        return ob_get_clean();
+        switch ($this->outputType) {
+            case 'compress':
+                ob_start('ob_gzhandler');
+                include VIEW_DIR . '/'.$this->getTemplate().'.php';
+                $output = ob_get_contents();
+                $output = Minify::html($output);
+                ob_end_clean();
+
+                return $output;
+            break;
+
+            case 'compact';
+                ob_start('ob_gzhandler');
+                include VIEW_DIR . '/'.$this->getTemplate().'.php';
+                $output = ob_get_contents();
+                $output = Minify::html($output);
+                ob_end_clean();
+
+                return $output;
+            break;
+
+            default:
+                ob_start('ob_gzhandler');
+                include VIEW_DIR . '/'.$this->getTemplate().'.php';
+                return ob_get_clean();
+            break;
+        }
+
+
     }
 
     /**

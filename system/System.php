@@ -28,15 +28,23 @@ class System
         return $this;
     }
 
+    /**
+     * Get routes
+     *
+     * @return mixed
+     */
     public function getRoutes()
     {
         return $this->routes;
     }
 
+    /**
+     * Run app
+     */
     public function run()
     {
         echo $this->router->run();
 
-        exit();
+        // exit();
     }
 }

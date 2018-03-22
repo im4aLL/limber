@@ -4,16 +4,32 @@ namespace Limber;
 class Header
 {
     public $responseCode = 200;
+    public $addtionalHeaders = [];
+
+    public function __construct($additionalHeaders = [])
+    {
+        $this->addtionalHeaders = $additionalHeaders;
+    }
 
     /**
      * Set response type
      *
      * @param $contentType
+     * @return Header
      */
     public function setResponseType($contentType)
     {
         header($contentType);
+
+        if(count($this->addtionalHeaders) > 0) {
+            foreach ($this->addtionalHeaders as $addtionalHeaderKey => $addtionalHeaderValue) {
+                header("{$addtionalHeaderKey}: {$addtionalHeaderValue}");
+            }
+        }
+
         http_response_code($this->responseCode);
+
+        return $this;
     }
 
     /**

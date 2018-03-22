@@ -7,4 +7,7 @@ class ExampleIndexResponder extends BaseResponder
 {
     protected $template = 'welcome';
     protected $type = 'html';
+    protected $additionalHeaders = [
+        'framework' => 'limber v1'
+    ];
 }
